@@ -236,8 +236,7 @@ Obj  EvCplx ( Obj hd ) { return hd; }
 void PrCplx (STREAM stream, Obj hd, int indent) {
     char buf[64];
     /* using snprintf prevents any buffer overflowing */
-    snprintf(buf, sizeof(buf)/sizeof(char), "Cplx(%.17g, %.17g)", RE(hd), IM(hd));
-    //Pr("%s", (Int)buf, 0);
+    snprintf(buf, sizeof(buf)/sizeof(char), "Cplx(%.17g, %.17g)", RE(hd), IM(hd)); //GS4 - Why does this use a seperate Thing?
     SyFmtPrint(stream, "%s", buf);
 }
 

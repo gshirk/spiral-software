@@ -482,7 +482,6 @@ void PrNS (STREAM stream, Obj hd, int indent)
     int i, first = 1;
     if (TableId(hd) != 0)
     {
-        //Pr("%g", (Int)TableId(hd), 0);
         PrintObj(stream, TableId(hd), 0);
     }
     else 
@@ -493,11 +492,9 @@ void PrNS (STREAM stream, Obj hd, int indent)
             if ( PTR_BAG(hd)[i] == 0 || VAR_VALUE(PTR_BAG(hd)[i]) == 0 )  continue;
             if (!first) 
             {
-                //Pr(", ", 0, 0); 
                 SyFmtPrint(stream, ", ");
             }
-            first = 0;
-            //Pr("%g", (Int)PTR_BAG(hd)[i], 0);         
+            first = 0;   
             PrintObj(stream, PTR_BAG(hd)[i], 0);
         }
         //**INDENT** Pr(")%2<",0,0);

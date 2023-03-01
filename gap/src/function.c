@@ -1120,28 +1120,20 @@ Bag       FunProfile (Bag hdCall)
             total = 1;
         }
 
-        //Pr(" count    time percent time/call child function\n",0,0);
         SyFmtPrint(stdout_stream, " count    time percent time/call child function\n");
 
         for ( i = 0; i < GET_SIZE_BAG(HdTimes)/SIZE_HD; i += 5 )
         {
-            //Pr("%6d  ", HD_TO_INT( PTR_BAG(HdTimes)[i+2] ), 0 );
             SyFmtPrint(stdout_stream, "%6d  ", HD_TO_INT(PTR_BAG(HdTimes)[i + 2]));
-            //Pr("%6d  ", HD_TO_INT( PTR_BAG(HdTimes)[i+3] ), 0 );
             SyFmtPrint(stdout_stream, "%6d  ", HD_TO_INT(PTR_BAG(HdTimes)[i + 3]));
-            //Pr("%6d  ", 100 * HD_TO_INT(PTR_BAG(HdTimes)[i+3]) / total, 0 );
             SyFmtPrint(stdout_stream, "%6d  ", 100 * HD_TO_INT(PTR_BAG(HdTimes)[i + 3]) / total);
-            //Pr("%6d  ", HD_TO_INT( PTR_BAG(HdTimes)[i+3] ) / HD_TO_INT( PTR_BAG(HdTimes)[i+2] ), 0 );
             SyFmtPrint(stdout_stream, "%6d  ", HD_TO_INT(PTR_BAG(HdTimes)[i + 3]) / HD_TO_INT(PTR_BAG(HdTimes)[i + 2]));
-            //Pr("%6d  ", HD_TO_INT( PTR_BAG(HdTimes)[i+4] ), 0 );
             SyFmtPrint(stdout_stream, "%6d  ", HD_TO_INT(PTR_BAG(HdTimes)[i + 4]));
             //Print( PTR_BAG(HdTimes)[i+1] );
             PrintObj(stdout_stream, PTR_BAG(HdTimes)[i + 1], 0);
-            //Pr("\n",0,0);
             SyFmtPrint(stdout_stream, "\n");
         }
 
-        //Pr("        %6d     100                  TOTAL\n",total-1,0);
         SyFmtPrint(stdout_stream, "        %6d     100                  TOTAL\n", total - 1);
     }
 
@@ -1297,7 +1289,6 @@ void  PrFunc(STREAM stream, Bag hdFun, char *keyword, char *shortKeyword, int in
     }
     else
     {
-        //Pr("\n",0,0);
         SyFmtPrint(stream, "\n");
 
         nrLoc = ((short*)((char*)PTR_BAG(hdFun) + GET_SIZE_BAG(hdFun)))[-1];
@@ -1328,7 +1319,6 @@ void  PrFunc(STREAM stream, Bag hdFun, char *keyword, char *shortKeyword, int in
         //**INDENT** Pr(";%4<\n",0,0);
         SyFmtPrint(stream, ";\n");
     }
-    //Pr("end",0,0);
     SyFmtPrint(stream, "end");
 }
 
@@ -1421,11 +1411,9 @@ void  PrFunccall(STREAM stream, Obj hdCall, int indent)
 void   PrReturn(STREAM stream, Obj hdRet, int indent)
 {
     if ( PTR_BAG(hdRet)[0] == HdReturn ) {
-        //Pr("quit",0,0);
         SyFmtPrint(stream, "quit");
     }
     else if ( PTR_BAG(hdRet)[0] == HdVoid ) {
-        //Pr("return",0,0);
         SyFmtPrint(stream, "return");
     }
     else {

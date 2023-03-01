@@ -2310,7 +2310,6 @@ Bag       FunCommutatorsPcp (Bag hdCall )
 */
 void PrPcPres(STREAM stream, Obj hdP, int indent)
 {
-    //Pr( "<Pcp: %d generators, %s collector>", (Int) NUMBER_OF_GENS( *PTR_BAG( hdP ) ), (Int) Collectors[ COLLECTOR( *PTR_BAG( hdP ) ) ].name );
     SyFmtPrint(stream, "<Pcp: %d generators, %s collector>", (Int)NUMBER_OF_GENS(*PTR_BAG(hdP)), Collectors[COLLECTOR(*PTR_BAG(hdP))].name);
 }
 

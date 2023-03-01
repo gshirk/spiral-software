@@ -1049,8 +1049,6 @@ Obj DefaultPrRec ( Obj hdRec ) {
     int  pr_populated = 0;
     
 
-    // GS4 -- revist this is the right stream std_out. 
-
     /*N 05-Jun-90 martin 'PrRec' should be capable of ignoring elements    */
     /*N 05-Jun-90 martin 'PrRec' should support '~.<path>'                 */
     if (GET_TYPE_BAG(hdRec) == T_MAKETAB)
@@ -1096,11 +1094,9 @@ Obj DefaultPrRec ( Obj hdRec ) {
                 //**INDENT** Pr("\n%2>", 0, 0); 
                 SyFmtPrint(stdout_stream, "\n");
             }
-            //Pr(" (",0,0);
             SyFmtPrint(stdout_stream, " (");
             //Print( PTR_BAG(hdRec)[2*i] );
             PrintObj(stdout_stream, PTR_BAG(hdRec)[2 * i], 0);
-            //Pr(")",0,0);
             SyFmtPrint(stdout_stream, ")");
         }
         /* print the component                                             */
@@ -1196,10 +1192,8 @@ void    PrRecAss(STREAM stream, Obj hdAss, int indent)
 */
 void    PrRecName(STREAM stream, Obj hdNam, int indent)
 {
-    //Pr("RecName(\"", 0, 0);
     SyFmtPrint(stream, "RecName(\"");
     PrVarName(stream, RECNAM_NAME(hdNam));
-    //Pr("\")", 0, 0);
     SyFmtPrint(stream, "\")");
 }
 

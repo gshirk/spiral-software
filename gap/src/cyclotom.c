@@ -1223,7 +1223,6 @@ void  PrCyc(STREAM stream, Obj hdCyc, int indent)
     for ( i = 1; i < len; i++ ) {
         if (cfs[i] == INT_TO_HD(1) && exs[i] == 0)
         {
-            //Pr("1", 0, 0);
             SyFmtPrint(stream, "1");
         }
         else if (cfs[i] == INT_TO_HD(1) && exs[i] == 1 && i == 1)

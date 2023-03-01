@@ -391,7 +391,6 @@ void PrStatseq (STREAM stream, Obj hdSSeq, int indent)
         PrintObj(stream, PTR_BAG(hdSSeq)[k], 0);
         if (k < GET_SIZE_BAG(hdSSeq) / SIZE_HD - 1)
         {
-            //Pr(";\n", 0, 0);
             SyFmtPrint(stream, ";\n");
         }
     }
@@ -445,7 +444,6 @@ void PrIf(STREAM stream, Obj hdIf, int indent)
     }
 
     /* print the 'fi'                                                      */
-    //Pr("fi",0,0);
     SyFmtPrint(stream, "fi");
 }
 

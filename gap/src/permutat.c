@@ -2201,11 +2201,9 @@ void  PrPermP(STREAM stream, Obj hdPerm, int indent)
         /* if the smallest is the one we started with lets print the cycle */
         if ( p == q && ptPerm[p] != p ) {
             isId = 0;
-            //Pr(fmt1,(Int)(p+1),0);
             SyFmtPrint(stream, fmt1, (Int)(p + 1));
             for (q = ptPerm[p]; q != p; q = ptPerm[q])
             {
-                //Pr(fmt2, (Int)(q + 1), 0);
                 SyFmtPrint(stream, fmt2, (Int)(q + 1));
             }
             //**INDENT** Pr("%<)",0,0);
@@ -2217,7 +2215,6 @@ void  PrPermP(STREAM stream, Obj hdPerm, int indent)
     /* special case for the identity                                       */
     if (isId) 
     { 
-        //Pr("()", 0, 0);
         SyFmtPrint(stream, "()");
     }
 }
@@ -2282,11 +2279,9 @@ void  PrPermQ(STREAM stream, Obj hdPerm, int indent)
         /* if the smallest is the one we started with lets print the cycle */
         if ( p == q && ptPerm[p] != p ) {
             isId = 0;
-            //Pr(fmt1,(Int)(p+1),0);
             SyFmtPrint(stream, fmt1, (Int)(p + 1));
             for (q = ptPerm[p]; q != p; q = ptPerm[q])
             {
-                //Pr(fmt2, (Int)(q + 1), 0);
                 SyFmtPrint(stream, fmt2, (Int)(q + 1));
             }
             //**INDENT**  Pr("%<)", 0, 0);
@@ -2299,7 +2294,6 @@ void  PrPermQ(STREAM stream, Obj hdPerm, int indent)
     /* special case for the identity                                       */
     if (isId)
     {
-        //Pr("()", 0, 0);
         SyFmtPrint(stream, "()");
     }
 }
@@ -2338,7 +2332,6 @@ void  PrMakeperm(STREAM stream, Obj hdPerm, int indent)
 
             if (k < GET_SIZE_BAG(hdCyc) / SIZE_HD - 1)
             { 
-                //Pr(",", 0, 0); 
                 SyFmtPrint(stream, ",");
             }
         }

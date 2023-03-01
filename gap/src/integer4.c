@@ -250,7 +250,6 @@ void	PrInteger(STREAM stream, Obj op, int indent)
 
 		if (TNUM_OBJ(op) == T_INTNEG)
 		{
-			//Pr("-", 0, 0);
 			SyFmtPrint(stream, "-");
 		}
 
@@ -258,12 +257,10 @@ void	PrInteger(STREAM stream, Obj op, int indent)
 		i = IntToPrintBase(op);
 
 		/* print the base PRINT_BASE digits                                 */
-		//Pr("%d", (Int)PrIntD[i], 0);
 		SyFmtPrint(stream, "%d", (Int)PrIntD[i]);
 
 		while (i > 0)
 		{
-			//Pr(PRINT_FORMAT, (Int)PrIntD[--i], 0);
 			SyFmtPrint(stream, "%09d", (Int)PrIntD[--i]);
 		}
 
@@ -273,7 +270,6 @@ void	PrInteger(STREAM stream, Obj op, int indent)
 	}
 	else 
 	{
-		//Pr("<<an integer too large to be printed>>", 0, 0);
 		SyFmtPrint(stream, "<<an integer too large to be printed>>");
 	}
 }

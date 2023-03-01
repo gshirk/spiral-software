@@ -306,19 +306,16 @@ Int            InputLogfile = -1;
 char            GetLine (void)
 {
 
-    //GS4 - unsure on this one - should be printing to log file
 
     /* if file is '*stdin*' print the prompt and flush it     */
     if (Input->file == stdin) 
     {
         if (!SyQuiet) 
         {
-           // Pr("%s%c", (Int)Prompt, (Int)'\03');
             SyFmtPrint(stdout_stream, "%s", Prompt);
         }
         else
         {
-            //Pr("%c", (Int)'\03', 0);
             SyFmtPrint(stdout_stream, "%c", '\03');
         }
     }
@@ -911,12 +908,10 @@ void            SyntaxError (char *msg)
     }
 
     /* print the message and the filename, unless it is '*stdin*'          */
-    //Pr( "Syntax error: %s (symbol: '%s')", (Int)msg, (Int)Value );
     Error("Syntax error: %s (symbol: '%s')", msg, Value);
 
     if ( !isStdIn ) 
     {
-        //Pr( " in %s line %d", (Int)Input->name, (Int)Input->number );
         SyFmtPrint(stderr_stream, " in %s line %d", Input->name, Input->number);
 	
         if(!launchedEdit)
@@ -926,11 +921,9 @@ void            SyntaxError (char *msg)
 	    }
     }
 
-    //Pr( "\n", 0, 0 );
     Error("\n");
 
     /* print the current line                                              */
-    //Pr( "%s", (Int)Input->line, 0 );
     Error("%s", Input->line);
 
     /* print a '^' pointing to the current position                        */
@@ -938,17 +931,14 @@ void            SyntaxError (char *msg)
     {
         if (Input->line[i] == '\t')
         { 
-            //Pr("\t", 0, 0);
             Error("\t");
         }
         else 
         { 
-            //Pr(" ", 0, 0);
             Error(" ");
         }
     }
 
-    //Pr( "^\n", 0, 0 );
     Error("^\n");
 
 }

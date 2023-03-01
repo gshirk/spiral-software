@@ -678,8 +678,7 @@ extern  Bag       FunIsBound ( Bag hdCall );
 extern  void (*PrTab[T_ILLEGAL]) (STREAM stream, Obj hd, int indent);
 
 /****************************************************************************
-**  GS4 -- TODO: clean up
-**  PrintObj( file stream, ) . . . . . . . . . . . . . . . . . . . . . . print an object
+**  **  PrintObj( file stream, indent ) . . . . . . . . . . . . . . . . . . . . . . print an object
 **
 **  'Print'  will pull in an input stream, an object, and an integer. 
 **  'Print'  prints  the  object  with  handle  <hd>.  It dispatches   to the
@@ -773,7 +772,6 @@ extern  void            InstEvFunc ( unsigned int     type,
 **  Installs the function  <func>  as  evaluation  function  for  the  binary
 **  operation with the table <tab> for operands of type  <typeL> and <typeR>.
 */
-//GS4-- Possibly Remove This
 extern  void            InstBinOp ( Bag  (* table [EV_TAB_SIZE][EV_TAB_SIZE]) (),
                                       unsigned int      leftType,
                                       unsigned int      rightType,

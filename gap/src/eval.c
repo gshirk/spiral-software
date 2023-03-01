@@ -1309,12 +1309,10 @@ void        PrBool(STREAM stream, Obj hd, int indent)
 {
     if (hd == HdTrue) 
     {
-        //Pr("true", 0, 0);
         SyFmtPrint(stream, "true");
     }
     else
     { 
-        //Pr("false", 0, 0); 
         SyFmtPrint(stream, "false");
     }
 }
@@ -1907,14 +1905,9 @@ void    PrintObj(STREAM stream, Obj hd, int indent)
    
 
 
-    /*
-        GS4 - Going through
-    */
-
     /* check for interrupts                                                */
     if (SyIsIntr()) 
     {
-        //Pr("%c", (Int)'\03', 0);
         SyFmtPrint(stream, "%c", '\03');
 
         /*N 19-Jun-90 martin do something about the current indent         */
@@ -1923,13 +1916,11 @@ void    PrintObj(STREAM stream, Obj hd, int indent)
 
     if (hd == 0)
     {
-        //Pr("_null_", 0, 0);
         SyFmtPrint(stream, "_null_");
 
     }
     else if (!IS_BAG(hd) && !IS_INTOBJ(hd))
     {
-        //Pr("_invalid_%d_", (Int)hd, 0);
         SyFmtPrint(stream, "_invalid_%d_", (Int)hd);
     }
     /* print new objects                                                   */
@@ -2030,17 +2021,14 @@ void    PrintObj(STREAM stream, Obj hd, int indent)
         {
             if (GET_TYPE_BAG(hdObj[i]) == T_VAR)
             {
-                //Pr("~", 0, 0);
                 SyFmtPrint(stream, "~");
             }
             else if (GET_TYPE_BAG(hdObj[i]) == T_LIST || GET_TYPE_BAG(hdObj[i]) == T_SET)
             {
-                //Pr("[%d]", index[i], 0);
                 SyFmtPrint(stream, "[%d]");
             }
             else
             {
-                //Pr(".%s", (Int)PTR_BAG(PTR_BAG(hdObj[i])[index[i] - 1]), 0);
                 SyFmtPrint(stream, ".%s", (Int)PTR_BAG(PTR_BAG(hdObj[i])[index[i] - 1]));
             }
         }
@@ -2065,7 +2053,6 @@ void CantPrint(Obj hd)
 
 void PrintBagType(STREAM stream, Obj hd, int indent)
 {
-    //Pr("_bag_%d_", GET_TYPE_BAG(hd), 0);
     SyFmtPrint(stream, "_bag_%d_", GET_TYPE_BAG(hd));
 }
 
@@ -2101,7 +2088,6 @@ void        PrVarName(STREAM stream, char* name)
         || !strcmp(name, "until") || !strcmp(name, "while")
         || !strcmp(name, "quit")) 
     {
-        //Pr("\\", 0, 0);
         SyFmtPrint(stream, "\\");
     }
 
@@ -2110,12 +2096,10 @@ void        PrVarName(STREAM stream, char* name)
     {
         if (IsAlpha(*name) || IsDigit(*name) || *name == '_' || *name == '@')
         {
-            //Pr("%c", (Int)(*name), 0);
             SyFmtPrint(stream, "%c", (*name));
         }
         else
         {
-            //Pr("\\%c", (Int)(*name), 0);
             SyFmtPrint(stream, "\\%c", (*name));
         }
     }
@@ -2282,7 +2266,6 @@ void        PrBinop(STREAM stream, Obj hdOp, int indent)
         && ((GET_TYPE_BAG(PTR_BAG(hdOp)[0]) == T_INT && HD_TO_INT(PTR_BAG(hdOp)[0]) < 0)
             || GET_TYPE_BAG(PTR_BAG(hdOp)[0]) == T_INTNEG))
     {
-        //Pr("(", 0, 0);
         SyFmtPrint(stream, "(");
     }
 
@@ -2293,7 +2276,6 @@ void        PrBinop(STREAM stream, Obj hdOp, int indent)
         && ((GET_TYPE_BAG(PTR_BAG(hdOp)[0]) == T_INT && HD_TO_INT(PTR_BAG(hdOp)[0]) < 0)
             || GET_TYPE_BAG(PTR_BAG(hdOp)[0]) == T_INTNEG))
     {
-        //Pr(")", 0, 0);
         SyFmtPrint(stream, ")");
     }
 
@@ -2371,7 +2353,6 @@ void            InstBinOp(Bag(*table[EV_TAB_SIZE][EV_TAB_SIZE]) (), unsigned int
 */
 void        InstPrFunc(unsigned int type, void (*func) (FILE, Bag, int))
 {
-    //GS4 - Going through these. InstPrFunc needs to accept stream, hd, indent
 
     PrTab[type] = func;
 }

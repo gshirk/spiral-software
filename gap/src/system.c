@@ -490,7 +490,7 @@ char *          SyFgets (char *line, Int length, FILE *file )
     }
 
 
-    Int fid = 0; //GS4 this is to be removed when input/output file struct is finished. 
+    Int fid = 0; 
     // After this is mimicing reading from console
     /* the line starts out blank                                           */
     line[0] = '\0';  p = line;  h = syHistory;

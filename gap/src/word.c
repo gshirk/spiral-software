@@ -1007,7 +1007,6 @@ void PrSword(STREAM stream, Obj hdWrd, int indent)
     ptWrd = (TypSword*)( PTR_BAG( hdWrd ) + 1 );
     if ( ptWrd[ 0 ] == -1 )
     {
-        //Pr( "IdWord",  0,  0 );
         SyFmtPrint(stream, "IdWord");
     }
     else
@@ -1020,12 +1019,10 @@ void PrSword(STREAM stream, Obj hdWrd, int indent)
 
         if (ptWrd[1] == 1)
         {
-            //Pr( "%s", (Int)((char*)(PTR_BAG(ptLst[ptWrd[0]])+1)+1),  0 );
             SyFmtPrint(stream, "%s", ((char*)(PTR_BAG(ptLst[ptWrd[0]]) + 1) + 1));
         }
         else
         {
-            //Pr("%s^%d", (Int)((char*)(PTR_BAG(ptLst[ptWrd[0]]) + 1) + 1), ptWrd[1]);
             SyFmtPrint(stream, "%s^%d", ((char*)(PTR_BAG(ptLst[ptWrd[0]]) + 1) + 1), (Int)ptWrd[1]);
         }
 
@@ -1034,12 +1031,10 @@ void PrSword(STREAM stream, Obj hdWrd, int indent)
         {
             if (ptWrd[1] != 1)
             {
-                //Pr("*%s^%d", (Int)((char*)(PTR_BAG(ptLst[ptWrd[0]]) + 1) + 1), ptWrd[1]);
                 SyFmtPrint(stream, "*%s^%d", ((char*)(PTR_BAG(ptLst[ptWrd[0]]) + 1) + 1), (Int)ptWrd[1]);
             }
             else
             {
-                //Pr("*%s", (Int)((char*)(PTR_BAG(ptLst[ptWrd[0]]) + 1) + 1), 0);
                 SyFmtPrint(stream, "*%s", ((char*)(PTR_BAG(ptLst[ptWrd[0]]) + 1) + 1));
             }
             ptWrd += 2;
@@ -1066,7 +1061,6 @@ void    PrWord (STREAM stream, Obj hdWrd, int indent)
 
     if ( nr == 0 )
     {
-        //Pr( "IdWord",  0,  0 );
         SyFmtPrint(stream, "IdWord");
     }
     else
@@ -1076,7 +1070,6 @@ void    PrWord (STREAM stream, Obj hdWrd, int indent)
         {
             if (PTR_BAG(hdWrd)[i] == 0)
             {
-                //Pr("~", 0, 0);
                 SyFmtPrint(stream, "~");
             }
             else
@@ -1096,18 +1089,15 @@ void    PrWord (STREAM stream, Obj hdWrd, int indent)
 
                if (exp == 1)
                {
-                   //Pr("%s", (Int)((char*)(PTR_BAG(PTR_BAG(hdWrd)[i]) + 1) + 1),  0);
                    SyFmtPrint(stream, "%s", ((char*)(PTR_BAG(PTR_BAG(hdWrd)[i]) + 1) + 1));
                }
                else
                {
-                   //Pr("%s^%d", (Int)((char*)(PTR_BAG(PTR_BAG(hdWrd)[i]) + 1) + 1), (Int)exp);
                    SyFmtPrint(stream, "%s^%d", ((char*)(PTR_BAG(PTR_BAG(hdWrd)[i]) + 1) + 1), (Int)exp);
                }
             }
             if (i != nr - 1)
             {
-                //Pr("*", 0, 0);
                 SyFmtPrint(stream, "*");
             }
             i++;

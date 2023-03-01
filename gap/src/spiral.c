@@ -124,14 +124,12 @@ void Apropos(STREAM stream, Obj hdSubStr, Obj tab, int recursive) {
 
         if(val != 0 && strstr(VAR_NAME(ent), sub_str) != NULL) { /* found something */
             if(! printed_header) {
-                //Pr("**** %g ****\n", (Int)tab, (Int)tab);
                 SyFmtPrint(stream, "****");
                 //Print(tab);
                 PrintObj(stream, tab, 0);
                 SyFmtPrint(stream, "****\n");
             }
             printed_header = 1;
-            //Pr("%s\n", (Int)VAR_NAME(ent), 0);
             SyFmtPrint(stream, "%s\n", (Int)VAR_NAME(ent));
         }
     }
@@ -600,21 +598,18 @@ Obj  FunCond( Obj hdCall ) {
 void BagInfo (STREAM stream, Obj hd ) {
     if (hd == NULL)
     {
-        //Pr("NULL bag\n", 0, 0);
         SyFmtPrint(stream, "NULL bag\n");
     }
     else if (!IS_BAG(hd))
     {
-        //Pr("INVALID bag\n", 0, 0);
         SyFmtPrint(stream, "INVALID bag\n");
     }
     else 
     {
-        //Pr("Type    : %d ( %s )\n", (Int)GET_TYPE_BAG(hd),  (Int)NameType[GET_TYPE_BAG(hd)]);
         SyFmtPrint(stream, "Type    : %d ( %s )\n", (Int)GET_TYPE_BAG(hd), NameType[GET_TYPE_BAG(hd)]);
+
         if(GET_TYPE_BAG(hd)==T_INT) 
         {
-            //Pr("Value   : %g\n", (Int)hd, 0);
             SyFmtPrint(stream, "Value   : ");
             //Print(hd);
             PrintObj(stream, hd, 0);
@@ -622,13 +617,10 @@ void BagInfo (STREAM stream, Obj hd ) {
 
             return;
         }
-        //Pr("Size    : %d \t Addr : 0x%s \n", (Int) GET_SIZE_BAG(hd), (Int) PTR_BAG(HexStringInt(INT_TO_HD(hd))));
+
         SyFmtPrint(stream, "Size    : %d \t Addr : 0x%s \n", (Int)GET_SIZE_BAG(hd), (char*)PTR_BAG(HexStringInt(INT_TO_HD(hd))));
-        //Pr("Handles : %d \t PTR_BAG  : 0x%s \n", (Int) NrHandles(GET_TYPE_BAG(hd), GET_SIZE_BAG(hd)), (Int) PTR_BAG(HexStringInt(INT_TO_HD(PTR_BAG(hd)))));
         SyFmtPrint(stream, "Handles : %d \t PTR_BAG  : 0x%s \n", (Int)NrHandles(GET_TYPE_BAG(hd), GET_SIZE_BAG(hd)), (char*)PTR_BAG(HexStringInt(INT_TO_HD(PTR_BAG(hd)))));
-        //Pr("Flags   : %d\n", (Int)GET_FLAGS_BAG(hd), 0);
         SyFmtPrint(stream, "Flags   : %d\n", (Int)GET_FLAGS_BAG(hd));
-        //Pr("Value   : %g\n", (Int)hd, 0);
         SyFmtPrint(stream, "Value   : %g\n", (Int)hd);
     }
 }
@@ -846,17 +838,16 @@ int  reachableFrom (STREAM stream, Obj root, Obj hd ) {
         for(i = 0; i < nhandles; ++i) {
             Obj child = PTR_BAG(root)[i];
             if(! IS_BAG(child)) continue;
-            if(reachableFrom(stream, child, hd)) {
-                //Pr("%d %s ", (Int)child, (Int)NameType[GET_TYPE_BAG(child)]);
+            if(reachableFrom(stream, child, hd)) 
+            {
                 SyFmtPrint(stream, "%d %s ", (Int)child, NameType[GET_TYPE_BAG(child)]);
+
                 if (GET_TYPE_BAG(child) == T_VAR || GET_TYPE_BAG(child) == T_VARAUTO || GET_TYPE_BAG(child) < T_MUTABLE ||
                     (GET_TYPE_BAG(child) > T_DELAY && GET_TYPE_BAG(child) < T_STATSEQ) || GET_TYPE_BAG(child) >= T_RETURN)
                 {
-                    //Pr("%g", (Int)child, 0);
                     //Print(child);
                     PrintObj(stream, child, 0);
                 }
-                //Pr("\n", 0, 0);
                 SyFmtPrint(stream, "\n");
                 return 1;
             }
@@ -867,9 +858,10 @@ int  reachableFrom (STREAM stream, Obj root, Obj hd ) {
 
 int  reachable (STREAM stream, Obj hd ) {
     UInt i, j, found = 0;
-    for (i = 0; i < GlobalBags.nr && !found; i++) {
-        if(reachableFrom(stream , *GlobalBags.addr[i], hd)) {
-            //Pr("global : %d : %s\n", (Int)*GlobalBags.addr[i], (Int) GlobalBags.cookie[i] );
+    for (i = 0; i < GlobalBags.nr && !found; i++) 
+    {
+        if(reachableFrom(stream , *GlobalBags.addr[i], hd)) 
+        {
             SyFmtPrint(stream, "global : %d : %s\n", (Int)*GlobalBags.addr[i], GlobalBags.cookie[i]);
             found = 1;
         }
@@ -1127,13 +1119,11 @@ Bag  FunEditDef ( Bag hdCall ) {
     switch(FindDocAndExtractLoc(PTR_BAG(hdCall)[1], fileName, &line)) {
         case  0: 
         { 
-            //Pr("--no documentation--\n", 0, 0); 
             SyFmtPrint(stdout_stream, "--no documentation--\n");
             break; 
         }
         case -1:
         {
-            //Pr("--defnition not found--\n", 0, 0);
             SyFmtPrint(stdout_stream, "--defnition not found--\n");
             break;
         }
@@ -1214,16 +1204,18 @@ Bag  findrefs_global(STREAM stream, Obj hd ) {
     result.list_capacity = 10;
     result.list = malloc(result.list_capacity*SIZE_HD);
     
-    if (result.list==0) {
-        //Pr(mem_err, 0, 0);
+    if (result.list==0)
+    {
         SyFmtPrint(stream, mem_err);
         return NewList(0);
     }
     
-    for (i = 0; i < GlobalBags.nr; i++) {
-        if(findrefs_recursion(*GlobalBags.addr[i], hd, &result)) {
-            if (result.mem_err) {
-                //Pr(mem_err, 0, 0);
+    for (i = 0; i < GlobalBags.nr; i++)
+    {
+        if(findrefs_recursion(*GlobalBags.addr[i], hd, &result)) 
+        {
+            if (result.mem_err) 
+            {
                 SyFmtPrint(stream, mem_err);
                 free(result.list);
                 return NewList(0);

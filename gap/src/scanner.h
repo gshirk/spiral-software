@@ -453,37 +453,6 @@ Int            CloseInput ( void );
 
 /****************************************************************************
 **
-*F  OpenOutput( <filename> )  . . . . . . . . . open a file as current output
-**
-**  'OpenOutput' opens the file  with the name  <filename> as current output.
-**  All subsequent output will go  to that file, until either   it is  closed
-**  again  with 'CloseOutput' or  another  file is  opened with 'OpenOutput'.
-**  The file is truncated to size 0 if it existed, otherwise it  is  created.
-**  'OpenOutput' does not  close  the  current file, i.e., if  <filename>  is
-**  closed again, output will go again to the current output file.
-**
-**  'OpenOutput'  returns  1 if it  could  successfully  open  <filename> for
-**  writing and 0 to indicate failure.  'OpenOutput' will fail if  you do not
-**  have  permissions to create the  file or write   to it.  'OpenOutput' may
-**  also   fail if you   have  too many files   open  at once.   It is system
-**  dependent how many are too many, but 16 files should work everywhere.
-**
-**  You can open '*stdout*'  to write  to the standard output  file, which is
-**  usually the terminal, or '*errout*' to write  to the standard error file,
-**  which is the terminal  even   if '*stdout*'  is  redirected to   a  file.
-**  'OpenOutput' passes  those  file names to 'SyFopen'  like any other name,
-**  they are just a convention between the main and the system package.
-**
-**  It is not neccessary to open the initial output file, 'InitScanner' opens
-**  '*stdout*' for that purpose.  This  file  on the other hand   can not  be
-**  closed by 'CloseOutput'.
-*/
-Int            OpenOutput ( char * filename );
-
-
-
-/****************************************************************************
-**
 *F  OpenLog( <filename> ) . . . . . . . . . . . . . log interaction to a file
 **
 **  'OpenLog'  instructs  the scanner to   echo  all  input   from  the files

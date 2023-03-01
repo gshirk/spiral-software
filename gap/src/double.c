@@ -349,7 +349,6 @@ void PrDbl(STREAM stream, Obj hd, int indent)
         snprintf(buf, sizeof(buf)/sizeof(char), "%.17g.0", DBL_OBJ(hd));
     else
         snprintf(buf, sizeof(buf)/sizeof(char), "%.17g", DBL_OBJ(hd));
-    //Pr("%s", (Int)buf, 0);
     SyFmtPrint(stream, "%s", buf);
 }
 

@@ -99,7 +99,6 @@ int execute()
 	        IsString( hd );
 	        //Print( hd );
             PrintObj(stdout_stream, hd, 0);
-	        //Pr("\n",0,0);
             SyFmtPrint(stdout_stream, "\n");
 	    }
       }

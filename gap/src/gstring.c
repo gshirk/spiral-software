@@ -145,42 +145,34 @@ void    PrChar(STREAM stream, Obj hdChr, int indent)
 
     if (currChr == '\n') 
     { 
-        //Pr("'\\n'", 0, 0);
         SyFmtPrint(stream, "'\\n'");
     }
     else if (currChr == '\t') 
     {
-        //Pr("'\\t'", 0, 0); 
         SyFmtPrint(stream, "'\\t'");
     }
-    else if (currChr == '\r') 
+    else if (currChr == '\r')
     {
-        //Pr("'\\r'", 0, 0);
         SyFmtPrint(stream, "'\\r'");
-    }
-    else if (currChr == '\b') 
+    } 
+    else if (currChr == '\b')
     {
-        //Pr("'\\b'", 0, 0); 
         SyFmtPrint(stream, "'\\b'");
-    }
+    }  
     else if (currChr == '\03')
     { 
-        //Pr("'\\c'", 0, 0); 
         SyFmtPrint(stream, "'\\c'");
-    }
-    else if (currChr == '\'') 
+    }  
+    else if (currChr == '\'')
     {
-        //Pr("'\\''", 0, 0); 
         SyFmtPrint(stream, "'\\''");
     }
     else if (currChr == '\\') 
     { 
-        //Pr("'\\\\'", 0, 0); 
         SyFmtPrint(stream, "'\\\\'");
     }
     else
     { 
-        //Pr("'%c'", (Int)currChr, 0);
         SyFmtPrint(stream, "'%c'", currChr);
     }
 
@@ -603,52 +595,42 @@ void PrString(STREAM stream, Obj hdStr, int indent)
 {
     char    *p;
 
-    //Pr("\"",0,0);
     SyFmtPrint(stream, "\"");
     for ( p = (char*)PTR_BAG(hdStr); *p != '\0'; ++p ) 
     {
         if (*p == '\n') 
         {
-            //Pr("\\n", 0, 0);
             SyFmtPrint(stream, "\\n");
         }
         else if (*p == '\t')
-        {
-            //Pr("\\t", 0, 0); 
+        { 
             SyFmtPrint(stream, "\\t");
         }
         else if (*p == '\r') 
         { 
-            //Pr("\\r", 0, 0);
             SyFmtPrint(stream, "\\r");
         }
         else if (*p == '\b')
         { 
-            //Pr("\\b", 0, 0);
             SyFmtPrint(stream, "\\b");
         }
         else if (*p == '\03')
         { 
-            //Pr("\\c", 0, 0); 
             SyFmtPrint(stream, "\\c");
         }
         else if (*p == '"')
         {
-            //Pr("\\\"", 0, 0); 
             SyFmtPrint(stream, "\\\"");
         }
         else if (*p == '\\')
         {
-            //Pr("\\\\", 0, 0);
             SyFmtPrint(stream, "\\\\");
         }
         else 
         { 
-            //Pr("%c", (Int)*p, 0);
             SyFmtPrint(stream, "%c", *p);
         }
     }
-    //Pr("\"",0,0);
     SyFmtPrint(stream, "\"");
 }
 
@@ -662,7 +644,6 @@ void PrString(STREAM stream, Obj hdStr, int indent)
 */
 void    PrintString(STREAM stream, Obj hdStr, int indent)
 {
-    //Pr( "%s", (Int)(char*)PTR_BAG(hdStr), 0 );
     SyFmtPrint(stream, "%s", (char*)PTR_BAG(hdStr));
 }
 
