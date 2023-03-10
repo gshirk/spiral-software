@@ -92,7 +92,7 @@
 
 #include        "system.h"              /* system dependent functions      */
 #include        "memmgr.h"              /* dynamic storage management      */
-#include        "scanner.h"             /* reading of tokens and printing  */
+
 #include        "eval.h"                /* evaluator main dispatcher       */
 #include        "integer.h"             /* arbitrary size integers         */
 #include        "integer4.h"            
@@ -1228,12 +1228,12 @@ void  PrCyc(STREAM stream, Obj hdCyc, int indent)
         else if (cfs[i] == INT_TO_HD(1) && exs[i] == 1 && i == 1)
         {
             //**INDENT** Pr("%>E(%d%<)", n, 0);
-            SyFmtPrint(stream, "E(%d)", n, 0);
+            SyFmtPrint(stream, "E(%d)", n);
         }
         else if (cfs[i] == INT_TO_HD(1) && exs[i] == 1)
         {
             //**INDENT** Pr("%>+E(%d%<)", n, 0);
-            SyFmtPrint(stream, "+E(%d)", n, 0);
+            SyFmtPrint(stream, "+E(%d)", n);
         }
         else if (cfs[i] == INT_TO_HD(1) && i == 1)
         {
@@ -1259,17 +1259,17 @@ void  PrCyc(STREAM stream, Obj hdCyc, int indent)
             PrintObj(stream, cfs[i], 0);
 
             //**INDENT** Pr("%>*%<E(%d%<)",n,0);
-            SyFmtPrint(stream, "*E(%d)", n, 0);
+            SyFmtPrint(stream, "*E(%d)", n);
         }
         else if ( LT(INT_TO_HD(0),cfs[i])==HdTrue && exs[i]==1 ) 
         {
             //**INDENT** Pr("%>+",0,0); 
-            SyFmtPrint(stream, "+", 0, 0);
+            SyFmtPrint(stream, "+");
             //Print(cfs[i]); 
             PrintObj(stream, cfs[i], 0);
 
             //**INDENT** Pr("%>*%<E(%d%<)",n,0); 
-            SyFmtPrint(stream, "*E(%d)", n, 0);
+            SyFmtPrint(stream, "*E(%d)", n);
         }
         else if ( LT(INT_TO_HD(0),cfs[i])==HdTrue && i==1 )
         {
@@ -1284,7 +1284,7 @@ void  PrCyc(STREAM stream, Obj hdCyc, int indent)
         else if ( LT(INT_TO_HD(0),cfs[i])==HdTrue ) 
         {
             //**INDENT** Pr("%>+",0,0); 
-            SyFmtPrint(stream, "+", 0, 0);
+            SyFmtPrint(stream, "+");
             //Print(cfs[i]);
             PrintObj(stream, cfs[i], 0);
             //**INDENT** Pr("%>*%<E(%d)%>^%2<%d",n,(Int)exs[i]);
@@ -1293,12 +1293,12 @@ void  PrCyc(STREAM stream, Obj hdCyc, int indent)
         else if (cfs[i] == INT_TO_HD(-1) && exs[i] == 0)
         {
             //**INDENT** Pr("%>-%<1", 0, 0);
-            SyFmtPrint(stream, "-1", 0, 0);
+            SyFmtPrint(stream, "-1");
         }
         else if (cfs[i] == INT_TO_HD(-1) && exs[i] == 1)
         {
             //**INDENT** Pr("%>-E(%d%<)", n, 0);
-            SyFmtPrint(stream, "-E(%d)", n, 0);
+            SyFmtPrint(stream, "-E(%d)", n);
         }
         else if (cfs[i] == INT_TO_HD(-1))
         {
@@ -1317,7 +1317,7 @@ void  PrCyc(STREAM stream, Obj hdCyc, int indent)
             //Print(cfs[i]);
             PrintObj(stream, cfs[i], 0);
             //**INDENT** Pr("%>*%<E(%d%<)",n,0);
-            SyFmtPrint(stream, "*E(%d)", n, 0);
+            SyFmtPrint(stream, "*E(%d)", n);
         }
         else 
         {

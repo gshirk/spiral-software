@@ -14,7 +14,7 @@
 #include        "memmgr.h"              /* dynamic storage manager         */
 #include        "objects.h"
 #include		"string4.h"
-#include        "scanner.h"             /* Pr()                            */
+
 #include        "eval.h"                /* evaluator main dispatcher       */
 #include        "integer.h"             /* HD_TO_INT / INT_TO_HD           */
 #include        "read.h"                /* ReadIt()                        */

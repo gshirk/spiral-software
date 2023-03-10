@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include        "system.h"              /* system dependent functions      */
-#include        "scanner.h"             /* Pr()                            */
+
 #include        "memmgr.h"              /* declaration part of the package */
 #include        "eval.h"
 #include        "integer.h"

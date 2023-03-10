@@ -91,7 +91,7 @@
 #include        "memmgr.h"              /* garbage collector               */
 #include        "eval.h"                /* generic operations              */
 #include        "gstring.h"              /* strings                         */
-#include        "scanner.h"             /* Pr()                            */
+
 #include        "integer.h"
 #include        <stdio.h>
 #include        <stdlib.h>

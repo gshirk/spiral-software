@@ -14,7 +14,7 @@
 #include        "idents.h"
 #include        "eval.h"                /* evaluator main dispatcher       */
 #include        "integer.h"             /* arbitrary size integers         */
-#include        "scanner.h"             /* Pr()                            */
+#include        "scanner.h"             /* Pr()                     GS4       */
 #include        "objects.h"
 #include		"string4.h"
 #include        "comments.h"
@@ -79,6 +79,7 @@ void ClearCommentBuffer(void) {
     CSTR_STRING(HdCommentBuffer)[0] = '\0';
 }
 
+//GS4-Input
 void AppendCommentBuffer(char *text, int tlen) {
     int buflen = strlen(CSTR_STRING(HdCommentBuffer));
     int bagsize = GET_SIZE_BAG(HdCommentBuffer);
@@ -140,6 +141,7 @@ Obj  FunClearCommentBuffer( Obj hdCall ) {
     return HdVoid;
 }
 
+//GS4-Input
 Obj  MakeDefString() {
     Obj result = 0;
     if (SAVE_DEF_LINE) {
@@ -151,6 +153,7 @@ Obj  MakeDefString() {
     return result;
 }
 
+//GS4-Input
 Obj  FunSaveDefLine( Obj hdCall ) {
     char * usage = "usage: SaveDefLine( <true> | <false> ) -- toggle automatic linenumber saving \n"
                    "       docstrings will not contain definition linenumber.\n"

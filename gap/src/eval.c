@@ -15,7 +15,7 @@
 
 #include        "system.h"              /* system dependent functions      */
 #include        "memmgr.h"              /* dynamic storage manager         */
-#include        "scanner.h"             /* reading of tokens and printing  */
+
 #include        "idents.h"              /* symbol table managment          */
 #include        "integer.h"             /* 'InitInt', large integers       */
 

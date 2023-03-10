@@ -18,7 +18,7 @@
 #include        "system.h"      /** system dependent functions            **/
 #include        "memmgr.h"      /** dynamic storage manager               **/
 #include        "eval.h"        /** evaluator main dispatcher             **/
-#include        "scanner.h"     /** 'Pr' is here                          **/
+
 #include        "idents.h"      /** 'FindRecname' is here                 **/
 #include        "integer.h"     /** arbitrary size integers               **/
 #include        "list.h"        /** 'IsList' is here                      **/

@@ -31,7 +31,7 @@
 #include        "integer.h"             /* arbitrary size integers         */
 #include        "eval.h"
 #include	"idents.h"
-#include        "scanner.h"             /* Pr()                            */
+
 #include        "list.h"
 #include        "read.h"                /* BinBag                          */
 #include        "args.h"

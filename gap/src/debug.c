@@ -10,7 +10,6 @@
 #include "namespaces.h"
 #include "function.h"
 #include "read.h"
-#include "scanner.h"
 #include "hooks.h"
 #include "comments.h"
 #include        "objects.h"

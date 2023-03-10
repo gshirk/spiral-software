@@ -48,7 +48,7 @@
 
 #include        "system.h"              /* system dependent functions      */
 #include        "memmgr.h"              /* dynamic storage management      */
-#include        "scanner.h"             /* reading of tokens and printing  */
+
 #include        "eval.h"                /* evaluator main dispatcher       */
 #include        "integer.h"             /* arbitrary size integers         */
 #include        "integer4.h"

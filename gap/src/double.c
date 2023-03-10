@@ -12,7 +12,7 @@
 #include        "rational.h"
 #include        "eval.h"
 #include        "idents.h"
-#include        "scanner.h"             /* Pr()                            */
+
 #include        "list.h"
 #include        "args.h"
 #include        "ieee754.h"      /* union ieee754_double */
