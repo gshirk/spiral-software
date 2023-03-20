@@ -1153,7 +1153,7 @@ Bag       FunREAD(Bag hdCall)
     exc_type_t    e;
 	UInt          processInclude;
 
-
+    //  printf ( "\nEnter FunREAD: " );
     /* check the number and type of arguments                              */
     if ((GET_SIZE_BAG(hdCall) != (2 * SIZE_HD)) && (GET_SIZE_BAG(hdCall) != (3 * SIZE_HD)))
     {
@@ -1166,6 +1166,7 @@ Bag       FunREAD(Bag hdCall)
     {
         return Error("usage: READ( <filename> )", 0, 0);
     }
+    //  printf ( "file = %s", (char*)PTR_BAG(hdName) );
 
     if (GET_SIZE_BAG(hdCall) == (3 * SIZE_HD))
     {
@@ -1239,6 +1240,7 @@ Bag       FunREAD(Bag hdCall)
     {
         Error("READ: can not close input, this should not happen", 0, 0);
     }
+    //  printf ( " ... done\n" );
 	
 	return HdTrue;
 }
