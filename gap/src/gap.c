@@ -147,11 +147,12 @@ int     main(int argc, char **argv)
             while (HdExec != 0)
             {
                 ChangeEnv(PTR_BAG(HdExec)[4], CEF_CLEANUP);
+            }
 
-                while (EvalStackTop > 0)
-                {
-                    EVAL_STACK_POP; 
-                }
+
+            while (EvalStackTop > 0)
+            {
+                EVAL_STACK_POP; 
             }
 		}
     }
@@ -249,10 +250,12 @@ void PrintBacktraceExec(STREAM stream, Bag hdExec, UInt execDepth, UInt execStac
     
     if (execDepth == execStackDepth - DbgStackTop)
     {
+
         SyFmtPrint(stream, "* ");
     }
     else
     {
+
         SyFmtPrint(stream, "  ");
     }
 
@@ -304,18 +307,20 @@ void PrintBacktraceExec(STREAM stream, Bag hdExec, UInt execDepth, UInt execStac
         }
         else if (PTR_BAG(hdExec)[3] == HdCallEq)
         {
+
             SyFmtPrint(stream, "<rec1> = <rec2>");
         }
         else if (PTR_BAG(hdExec)[3] == HdCallLt)
         { 
-            SyFmtPrint(stream, "<rec1> = <rec2>");
+            SyFmtPrint(stream, "<rec1> < <rec2>");
         }
         else if (PTR_BAG(hdExec)[3] == HdCallIn) 
         { 
+
             SyFmtPrint(stream, "<elm> in <rec>");
         }
         else if (PTR_BAG(hdExec)[3] == HdCallPrint)
-        {  
+
             SyFmtPrint(stream, "Print( <rec> )");
         }
         else 
@@ -571,14 +576,21 @@ Bag       FunBacktraceTo (Bag hdCall)
         return Error(usage, 0, 0); 
     }
 
+    /* /\* try to open the given output file, raise an error if you can not    *\/ */
+    /* what happens if we don't open the requested output file???  -- ptb */
+    /* if ( OpenOutput( (char*)PTR_BAG(hdName) ) == 0 ) */
+    /*     return Error("BacktraceTo: can not open '%s' for writing", */
+	/* 	     (Int)PTR_BAG(hdName), 0); */
+
     FunBacktrace(hdLevel);
 
     /* close the output file again, and return nothing                     */
 
-   /* if (!CloseOutput())
-    {
-        Error("BacktraceTo: can not close output, this should not happen", 0, 0);
-    }*/
+
+   /* if (!CloseOutput()) */
+   /* { */
+   /*     Error("BacktraceTo: can not close output, this should not happen", 0, 0); */
+   /* } */
 
     return HdVoid;
 }
@@ -868,12 +880,16 @@ Bag       Error (char *msg, Int arg1, Int arg2)
 			/* print the error message, special if called from 'FunError'      */
 			if ( strcmp( msg, "FunError" ) != 0 )
             {
-                SyFmtPrint(stderr_stream, "Breakpoint");
+
+
+                SyFmtPrint(stderr_stream, "Error, ");
+
                 SyFmtPrint(stderr_stream, msg, arg1, arg2); 
 			} 
             else 
             {
-                SyFmtPrint(stderr_stream, "Error");
+
+                SyFmtPrint(stderr_stream, "Error, ");
                 FunPrint( (Bag)arg1 );
 			}
 		}
@@ -1053,7 +1069,7 @@ Bag       Error (char *msg, Int arg1, Int arg2)
 			while ( CloseInput() ) ;
 		} 
         else
-         { 
+
             // if we are already in error loop just cleanup stack
             while (HdExec != DbgStackExec()) 
             {
@@ -1503,7 +1519,8 @@ Bag       FunPrintTo(Bag hdCall)
     }
 
     filename = (char*)PTR_BAG(hd);
-    file = fopen(filename, "w");
+
+    file = SyFopen(filename, "w");
     if (file == 0)
     {
         return Error("PrintTo: can not open the file for writing", 0, 0);
@@ -1520,7 +1537,8 @@ Bag       FunPrintTo(Bag hdCall)
     }
 
     global_stream = save_stream;
-    fclose(streamFile(stream));
+
+    SyFclose(streamFile(stream));
 
     return HdVoid;
 }
@@ -1566,7 +1584,8 @@ Bag       FunAppendTo(Bag hdCall)
     }
 
     filename = (char*)PTR_BAG(hd);
-    file = fopen(filename, "a");
+
+    file = SyFopen(filename, "a");
     if (file == 0)
     {
         return Error("PrintTo: can not open the file for writing", 0, 0);
@@ -1583,7 +1602,8 @@ Bag       FunAppendTo(Bag hdCall)
     }
 
     global_stream = save_stream;
-    fclose(streamFile(stream));
+
+    SyFclose(streamFile(stream));
 
     return HdVoid;
 }
@@ -1741,6 +1761,7 @@ Bag       FunLogInputTo(Bag hdCall)
 */
 Bag       FunHelp(Bag hdCall)
 {
+
     char *helpString = "Use Dir(spiral) and Dir(gap) to see a list of SPIRAL and GAP packages\n" 
         "Use Dir(spiral.<pkg>) and Dir(gap.<pkg>) to see contents of <pkg>\n" 
         "Use ?<func> or Doc(<func>) to learn about a function or a package\n";

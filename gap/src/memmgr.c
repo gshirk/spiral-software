@@ -611,7 +611,6 @@ extern TNumAbortFuncBags   AbortFuncBags;
 
 void    InitGlobalBag ( BagPtr_t *addr, const Char *cookie )
 {
-
     if ( GlobalBags.nr == NR_GLOBAL_BAGS ) {
         (*AbortFuncBags)( "Panic: Gasman cannot handle so many global variables" );
     }
@@ -623,15 +622,18 @@ void    InitGlobalBag ( BagPtr_t *addr, const Char *cookie )
 			for (i = 0; i < GlobalBags.nr; i++)
 				if ( 0 == strcmp(GlobalBags.cookie[i], cookie) ) {
 					if (GlobalBags.addr[i] == addr)
-                        SyFmtPrint(stdout_stream, "Duplicate global bag entry %s\n", cookie, 0);
+
+                        printf("Duplicate global bag entry %s\n", cookie, 0);
 					else
-                        SyFmtPrint(stdout_stream, ("Duplicate global bag cookie %s\n", cookie, 0);
+
+                        printf("Duplicate global bag cookie %s\n", cookie, 0);
 				}
     }
 #endif
 
     if ( WarnInitGlobalBag ) {
-        SyFmtPrint(stdout_stream, "#W  global bag '%s' initialized\n", cookie);
+
+        printf("#W  global bag '%s' initialized\n", cookie);
     } 
     GlobalBags.addr[GlobalBags.nr] = addr;
     GlobalBags.cookie[GlobalBags.nr] = cookie;
@@ -1420,17 +1422,21 @@ static void CheckMptrHandles ( int arenanr )
     return;
 }
 
-// Walk the actual bags -- assumptions is we're called after GC, so everything
-// should cleanly setup with no holes from OldBagStart to AllocBagStart; at this
-// point AllocBagStart should = YoungBagStart (i.e., no new bags have been
-// created since GC done).
 
-static void WalkBagPointers ( int arenanr )
+// Walk the actual bags -- if "clean" is true then the assumption is we're called
+// after GC, so everything should cleanly setup with no holes from OldBagStart to
+// AllocBagStart; at this point AllocBagStart should = YoungBagStart (i.e., no new bags
+// have been created since GC done).  If "clean" is false there may be 'holes' left because
+// bags have been moved or resized.
+
+
+static void WalkBagPointers ( int arenanr, int clean )
 {
     BagPtr_t start, end, foo;
     BagStruct_t *ptr;
-    UInt type, nbad = 0, szbad = 0;
-    UInt nFound = 0, szFound = 0, sizeCurr;
+
+    UInt type, nbad = 0, oldbad = 0, szbad = 0;
+    UInt nFound = 0, szFound = 0, nRemnant = 0, szRemnant = 0, sizeCurr;
     ArenaBag_t *par = &MemArena[arenanr];
     
     start = par->OldBagStart; end = par->AllocBagStart;
@@ -1446,24 +1452,42 @@ static void WalkBagPointers ( int arenanr )
     while (start < (end - 1)) {            /* last mptr in list is 0 */
         ptr = (BagStruct_t *)start;
         type = ptr->bagFlagsType & TYPE_BIT_MASK;
-        if (type < T_INT || type > T_FREEBAG) {
-            sizeCurr = ptr->bagSize + sizeof(BagStruct_t) - sizeof(BagPtr_t);
-            nbad++; szbad += sizeCurr;
-            PrintBagInfo(ptr);
-        }
+
+
         nFound++;
-        sizeCurr = ptr->bagSize + sizeof(BagStruct_t) - sizeof(BagPtr_t);
-        szFound += sizeCurr;
-        start += (sizeCurr + sizeof(BagPtr_t) - 1) / sizeof(BagPtr_t);
-        // link pointer should point to the bag handle, bag handle should
-        // point back to the data pointer
-        if (ptr->bagLinkPtr && par->BagHandleStart <= ptr->bagLinkPtr && ptr->bagLinkPtr < par->OldBagStart) {
-            BagPtr_t foo = ptr->bagLinkPtr, bar = *ptr->bagLinkPtr;
-            if (bar != &ptr->bagData) {
-                // we're foobar'd
-                printf("        Suspect misaligned handle/link pointer: link = %p, handle = %p, *handle = %p, data ptr = %p\n",
-                       foo, bar, *bar, &ptr->bagData);
+        if ( clean == 0 && type == T_RESIZE_FREE ) {
+            // should only have remnants when clean is false (i.e., GC not run prior)
+            sizeCurr = ptr->bagSize + sizeof(BagPtr_t);  // calc is different for remnant
+            nRemnant++; szRemnant += sizeCurr;
+            start += WORDS_BAG(sizeCurr);
+        }
+        else if (type < T_VOID || type > T_FREEBAG) {
+            PrintBagInfo(ptr);
+            sizeCurr = sizeof(BagPtr_t);        // walk forward 1 word at a time -- try to recover
+                                                // sizeCurr = ptr->bagSize + sizeof(BagStruct_t) - sizeof(BagPtr_t);
+            nbad++; szbad += sizeCurr;
+
+            start++;
+        }
+
+        else {
+            sizeCurr = ptr->bagSize + sizeof(BagStruct_t) - sizeof(BagPtr_t);
+            szFound += sizeCurr;
+            start += (sizeCurr + sizeof(BagPtr_t) - 1) / sizeof(BagPtr_t);
+            // link pointer should point to the bag handle, bag handle should
+            // point back to the data pointer
+            if (ptr->bagLinkPtr && par->BagHandleStart <= ptr->bagLinkPtr && ptr->bagLinkPtr < par->OldBagStart) {
+                BagPtr_t foo = ptr->bagLinkPtr, bar = *ptr->bagLinkPtr;
+                if (bar != &ptr->bagData) {
+                    // we're foobar'd
+                    printf("        Suspect misaligned handle/link pointer: link = %p, handle = %p, *handle = %p, data ptr = %p\n",
+                           foo, bar, *bar, &ptr->bagData);
+                }
             }
+        }
+        if ( clean == 0 && nbad > 0 && nbad != oldbad ) {
+            printf ( "Bag ptr = %p (Bag # %d), Type = %d, Size = %u\n", ptr, nFound, type, sizeCurr );
+            oldbad = nbad;
         }
     }
 
@@ -1472,6 +1496,9 @@ static void WalkBagPointers ( int arenanr )
 	if (nbad > 0)
 		printf("    Found %u suspect bags, total size = %uk (%uMb)\n",
 			   nbad, szbad / 1024, szbad / (1024 * 1024));
+    if ( clean == 0 )
+        printf ( "    Found %u remnants, total size = %uk (%uMb)\n",
+                 nRemnant, szRemnant / 1024, szRemnant / (1024 * 1024));
 
     // Walk the remaining memory, which should be the free pool.  It should all
     // have been initialized to zeros... Things appear to be all messed up if
@@ -1623,6 +1650,78 @@ static UInt CountFreeChain ( ArenaBag_t *par )
 	return count;
 }
 
+//  WalkArenaBags() is intended to walk all the allocated bags in the pool area of the
+//  arena and outputs some simple statistical information.  If errors are found (they are
+//  ususally catastrophic) they are noted if possible.
+
+static void WalkArenaBags ( ArenaBag_t *par )
+{
+    BagPtr_t *      src;				/* source in sweeping              */
+    Int4            isz;
+    
+    src = par->OldBagStart;             //  Start at the beginning of bags data
+
+    UInt nLive, nRemnant, szLive, szRemnant;
+    nLive = nRemnant = szLive = szRemnant = 0;
+
+    // Walk all bags:  A bag must be either: in use (alive or dead), or resize free
+    UInt nbagsCheck = 0;
+    while ( src < par->AllocBagStart ) {
+        nbagsCheck++;
+        if ( GET_TYPE_PTR(src) == T_RESIZE_FREE ) {
+            // leftover remnant of a resize of <n> bytes
+            // Move source pointer (dest stays put)
+            if ( TEST_FLAG_PTR ( src, BF_COPY ) ) {            // one-word remnant
+                src++;
+                nRemnant++; szRemnant += sizeof(BagPtr_t *);
+            }
+            else {
+                isz = WORDS_BAG ( GET_SIZE_PTR(src) );
+                if ( isz < 0 ) {
+                    // Some sort of invalid bag encountered
+                    printf ( "WalkArenaBags: Panic -- memory manager found -ve sized remnant (%p), size = %d\n", src, isz);
+                    src++;              //  walk forward word by word to try recovering...
+                }
+                else {
+                    src += 1 + WORDS_BAG( GET_SIZE_PTR(src) ); // multi-word remnant 
+                    nRemnant++; szRemnant += GET_SIZE_PTR(src) + sizeof(BagPtr_t *);
+                }
+            }
+        }
+
+        else if ( ((UInt)GET_LINK_PTR(src)) % sizeof(BagPtr_t) == 0 ) {
+            // Active bag (it's in the allocated chain; don't know until next GC if it's alive or dead)
+            nLive++; szLive += GET_SIZE_PTR(src) + HEADER_SIZE * sizeof(BagPtr_t *);
+
+            // Check the link points correctly back to a handle
+            BagPtr_t nfhead = GET_LINK_PTR(src);
+            if (nfhead < par->BagHandleStart || nfhead >= par->OldBagStart) {
+                // link is *NOT* valid
+                printf ( "WalkArenaBags:: Bad link from bag (%p), link (%p) \n", src, nfhead);
+            }
+
+            src += HEADER_SIZE + WORDS_BAG( GET_SIZE_PTR(src) ) ; // Advance src
+        }
+
+        else {
+            // Some sort of invalid header encountered
+            printf ( "WalkArenaBags: Panic -- memory manager found bogus header (%p)\n", src);
+            src++;              //  walk forward word by word to try recovering...
+        }
+    }
+
+    // Since doing full GC have now processed all bags 
+    printf ( "WalkArenaBags: Arena #%d: Walked all bags...found:\n", par->ArenaNumber);
+    printf ( "#     Live Bags = %10u, size     Live Bags = %10u (%uk / %uMb)\n",
+             nLive, szLive, szLive / 1024, szLive / (1024 * 1024));
+    printf ( "#  Remnant Bags = %10u, size  Remnant Bags = %10u (%uk / %uMb)\n",
+             nRemnant, szRemnant, szRemnant / 1024, szRemnant / (1024 * 1024));
+    fflush(stdout);
+
+    return;
+}
+
+
 static int  DumpMemArenaData ( int flag )
 {
     ArenaBag_t *par = &MemArena[0];
@@ -1654,6 +1753,9 @@ static int  DumpMemArenaData ( int flag )
 				   ((UInt)par->EndBags - (UInt)par->AllocBagStart) / 1024,
 				   (((UInt)par->EndBags - (UInt)par->AllocBagStart) / (1024 * 1024)),
 				   (100.0 * (float)freepool / (float)sizepool) );
+
+            WalkArenaBags ( par );
+            WalkBagPointers ( par->ArenaNumber, 0 );
 		}
 		else {
 			printf("    Free Chain = %p, Marked bags = %p, # on Marked chain = %u\n\n",
@@ -1997,6 +2099,8 @@ static void SweepArenaBags ( ArenaBag_t *par )
             // Some sort of invalid header encountered
             printf("Collectbags: Panic -- memory manager found bogus header (%p) -- exiting\n", src);
             // exit(1);
+            fflush ( stdout );
+            break;      //  PTB added, otherwise loop infinitely 
         }
     }
 
@@ -2035,7 +2139,7 @@ static void CheckArenaBags ( ArenaBag_t *par )
     if (SyMemMgrTrace > 0)   {
         printf("Collectbags: Start checking phase ...\n");
         
-        WalkBagPointers(par->ArenaNumber);
+        WalkBagPointers ( par->ArenaNumber, 1 );
 
         printf("CollectBags: After looping Master pointers...\n");
         PrintArenaInfo(par, 0);

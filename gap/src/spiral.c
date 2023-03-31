@@ -621,7 +621,10 @@ void BagInfo (STREAM stream, Obj hd ) {
         SyFmtPrint(stream, "Size    : %d \t Addr : 0x%s \n", (Int)GET_SIZE_BAG(hd), (char*)PTR_BAG(HexStringInt(INT_TO_HD(hd))));
         SyFmtPrint(stream, "Handles : %d \t PTR_BAG  : 0x%s \n", (Int)NrHandles(GET_TYPE_BAG(hd), GET_SIZE_BAG(hd)), (char*)PTR_BAG(HexStringInt(INT_TO_HD(PTR_BAG(hd)))));
         SyFmtPrint(stream, "Flags   : %d\n", (Int)GET_FLAGS_BAG(hd));
-        SyFmtPrint(stream, "Value   : %g\n", (Int)hd);
+        //Pr("Value   : %g\n", (Int)hd, 0);
+        SyFmtPrint(stream, "Value   : ");
+        PrintObj(stream, hd, 0);
+        SyFmtPrint(stream, "\n");
     }
 }
 
@@ -838,6 +841,7 @@ int  reachableFrom (STREAM stream, Obj root, Obj hd ) {
         for(i = 0; i < nhandles; ++i) {
             Obj child = PTR_BAG(root)[i];
             if(! IS_BAG(child)) continue;
+
             if(reachableFrom(stream, child, hd)) 
             {
                 SyFmtPrint(stream, "%d %s ", (Int)child, NameType[GET_TYPE_BAG(child)]);
@@ -858,6 +862,7 @@ int  reachableFrom (STREAM stream, Obj root, Obj hd ) {
 
 int  reachable (STREAM stream, Obj hd ) {
     UInt i, j, found = 0;
+
     for (i = 0; i < GlobalBags.nr && !found; i++) 
     {
         if(reachableFrom(stream , *GlobalBags.addr[i], hd)) 
@@ -1204,12 +1209,14 @@ Bag  findrefs_global(STREAM stream, Obj hd ) {
     result.list_capacity = 10;
     result.list = malloc(result.list_capacity*SIZE_HD);
     
+
     if (result.list==0)
     {
         SyFmtPrint(stream, mem_err);
         return NewList(0);
     }
     
+
     for (i = 0; i < GlobalBags.nr; i++)
     {
         if(findrefs_recursion(*GlobalBags.addr[i], hd, &result)) 

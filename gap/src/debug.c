@@ -52,11 +52,13 @@ UInt    InBreakpoint = 0;
 
 static Obj (* OrigEvTab[ T_ILLEGAL ]) ( Obj hd );
 
-/* PrTab hooked by FunTop function in order to be able to highlight
-current statement while printing top function */
+/*
+ **  PrTab hooked by FunTop function in order to be able to highlight current statement
+ **  while printing top function.  Declaration for OrigPrTab must match the definition of
+ **  PrTab (see eval.[ch]).
+ */
 
-static void (* OrigPrTab[ T_ILLEGAL ]) ( Obj hd );
-
+static void (* OrigPrTab[ T_ILLEGAL ]) (STREAM stream, Obj hd, int indent);
 static inline UInt isRetTrueFunc(Obj hdFunc) {
     Obj hdStat = PTR_BAG(hdFunc)[0];
     return (GET_TYPE_BAG(hdStat)==T_RETURN) && (PTR_BAG(hdStat)[0] == HdTrue);
@@ -442,8 +444,7 @@ is matched, even if condition function returns false.\n\
 \n";
     
     
-Obj FunDebugHelp ( Obj hdCall )
-{
+
     SyFmtPrint(stdout_stream, "%s", HelpText);
     return HdVoid;
 }
@@ -622,7 +623,8 @@ UInt    TopPr_MaxDepth;
 static void TopPr (STREAM stream, Obj hd, int indent) {
     UInt hasFlag, highlight = 0; 
     if (hd==0 || IS_INTOBJ(hd)) {
-        (*OrigPrTab[GET_TYPE_BAG(hd)])(hd);
+
+        ( *OrigPrTab[GET_TYPE_BAG(hd)]) ( stream, hd, indent );
         return;
     }
     hasFlag = GET_FLAG_BAG(hd, BF_ON_EVAL_STACK);
@@ -643,7 +645,8 @@ static void TopPr (STREAM stream, Obj hd, int indent) {
     }
     if (highlight) HooksBrkHighlightStart();
     // call original Pr function
-    (*OrigPrTab[GET_TYPE_BAG(hd)])(hd);
+
+    ( *OrigPrTab[GET_TYPE_BAG(hd)]) ( stream, hd, indent );
     if (highlight) HooksBrkHighlightEnd();
     if ( hasFlag )
         TopPr_CurDepth--;
@@ -651,23 +654,27 @@ static void TopPr (STREAM stream, Obj hd, int indent) {
 
 static void HookPrTab()
 {
-    int t;
+    int tindx;
     PrTabHooked++;
-    if (PrTabHooked==1) {
-        for(t=0; t<T_ILLEGAL; ++t) {
-	    OrigPrTab[t] = PrTab[t];
-	    PrTab[t] = TopPr;
+
+    if ( PrTabHooked == 1 ) {
+        for ( tindx = 0; tindx < T_ILLEGAL; ++tindx ) {
+            OrigPrTab[tindx] = PrTab[tindx];
+            PrTab[tindx] = TopPr;
         }
     }
 }
+
 static void UnhookPrTab()
 {
-    int t;
-    if (PrTabHooked>0) {
+
+    int tindx;
+    if ( PrTabHooked > 0 ) {
         PrTabHooked--;
-        if (PrTabHooked==0) {
-            for(t=0; t<T_ILLEGAL; ++t) {
-	        PrTab[t] = OrigPrTab[t];
+
+        if ( PrTabHooked == 0 ) {
+            for ( tindx = 0; tindx < T_ILLEGAL; ++tindx ) {
+                PrTab[tindx] = OrigPrTab[tindx];
             }
         }
     }
@@ -694,10 +701,13 @@ Obj  FunTop ( Obj hdCall ) {
 
     if (doc != 0 && GET_TYPE_BAG(doc) == T_STRING)
     {
+
         SyFmtPrint(stdout_stream, "%s", CSTR_STRING(doc));
+
     } 
     else 
     {
+
         SyFmtPrint(stdout_stream, "--no documentation--\n");
     }
 
@@ -707,31 +717,48 @@ Obj  FunTop ( Obj hdCall ) {
         // first time figure out what to highlight, this is not precise
         // but better than nothing. Redirect output to /dev/null and traverse
         // bags that will be printed.
-/*/
+        STREAM nulldev;
+        STREAM save_stream;
+
 #ifdef WIN32
-        OpenOutput("NUL");
+        // OpenOutput("NUL");
+        SET_STREAM_FILE ( nulldev, SyFopen ( "NUL", "w" ) );
 #else
-        OpenOutput("/dev/null");
+        // OpenOutput("/dev/null");
+        SET_STREAM_FILE ( nulldev, SyFopen ( "/dev/null", "w" ) );
 #endif
-    */
+
+        save_stream = global_stream;
+        global_stream = nulldev;
+        
         TopPr_CurDepth = 0; // current tree depth (in marked bags)
         TopPr_MaxDepth = 0; // maximal tree depth (in marked bags)
         Try {
             TopPr_Printing = 0; // we are going to calculate  max depth first
-            PrintObj(stdout_stream, top, 0);
-            SyFmtPrint(stdout_stream, "\n");
+            PrintObj(global_stream, top, 0);
+            SyFmtPrint(global_stream, "\n");
+            
             // closing /dev/null and return to previous output
-           // CloseOutput();
+
+            // CloseOutput();
+            global_stream = save_stream;
+            SyFclose ( streamFile ( nulldev ) );
+            
         } Catch(e) {
-           // CloseOutput();
+
+            // CloseOutput();
+            global_stream = save_stream;
+            SyFclose ( streamFile ( nulldev ) );
+            
             Throw(e);
         }
         TopPr_Printing = 1; // now we are going to print function
         TopPr_CurDepth = 0; // reset tree depth, all what marked by BF_ON_EVAL_STACK
                             // flag and has TopPr_MaxDepth will be highlighted (with 
                             // children).
-        PrintObj(stdout_stream, top, 0);
-        SyFmtPrint(stdout_stream, "\n");
+
+        PrintObj(global_stream, top, 0);
+        SyFmtPrint(global_stream, "\n");
     } Catch(e) {
         UnhookPrTab();
         Throw(e);
@@ -757,11 +784,13 @@ Obj  FunEditTopFunc ( Obj hdCall ) {
     switch(FindDocAndExtractLoc(PTR_BAG(DbgStackExec())[2], fileName, &line)) {
         case  0: 
         { 
+
             SyFmtPrint(stdout_stream, "--no documentation--\n");
             break; 
         }
         case -1:
         { 
+
             SyFmtPrint(stdout_stream, "--definition not found--\n");
             break;
         }
@@ -797,7 +826,8 @@ Obj  FunDown ( Obj hdCall ) {
     while (levels-->0) {
         if ( !DbgDown() ) 
         { 
-            SyFmtPrint(stdout_stream, "%s", errText); //GS4 - Should all errText go through error function I think so. 
+
+            SyFmtPrint(stdout_stream, "%s", errText);  
             break;
         }
     }
